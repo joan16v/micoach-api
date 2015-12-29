@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use League\OAuth2\Client\Provider\GenericProvider;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class DefaultController extends Controller
 {
@@ -29,12 +30,50 @@ class DefaultController extends Controller
             'urlResourceOwnerDetails' => 'https://api.micoach.com/v3/users/me'
         ]);
         //print_r($provider);
-        echo $provider->getAuthorizationUrl() . '<br>';
-        echo $provider->getState() . '<br>';
+        //echo $provider->getAuthorizationUrl() . '<br>';
+        //echo $provider->getState() . '<br>';
 
-        $buzz = $this->container->get('buzz');
-        $response = $buzz->get($provider->getAuthorizationUrl());
-        echo $response->getContent();
+        if (!$request->query->has('code')) {
+            $authorizationUrl = $provider->getAuthorizationUrl();
+            $session->set('oauth2state', $provider->getState());
+            //$request->query->get('code')
+            return $this->redirect($authorizationUrl);
+        }
+
+        if (!$request->query->has('state') || $request->query->get('state') != $session->get('oauth2state')) {
+            return new Response('Invalid state');
+        }
+
+        try {
+
+            // Try to get an access token using the authorization code grant.
+            $accessToken = $provider->getAccessToken('authorization_code', [
+                'code' => $request->query->get('code'),
+            ]);
+
+            // We have an access token, which we may use in authenticated
+            // requests against the service provider's API.
+            echo $accessToken->getToken() . "\n";
+            echo $accessToken->getRefreshToken() . "\n";
+            echo $accessToken->getExpires() . "\n";
+            echo ($accessToken->hasExpired() ? 'expired' : 'not expired') . "\n";
+
+            // Using the access token, we may look up details about the
+            // resource owner.
+            $resourceOwner = $provider->getResourceOwner($accessToken);
+
+            var_export($resourceOwner->toArray());
+
+        } catch (IdentityProviderException $e) {
+
+            // Failed to get the access token or user details.
+            return new Response($e->getMessage());
+
+        }
+
+        //$buzz = $this->container->get('buzz');
+        //$response = $buzz->get($provider->getAuthorizationUrl());
+        //echo $response->getContent();
 
         return new Response('');
     }
