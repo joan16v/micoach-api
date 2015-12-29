@@ -1,3 +1,7 @@
 joan_adidas_homepage:
     path:     /
     defaults: { _controller: JoanAdidasBundle:Default:index }
+
+joan_adidas_get:
+    path:     /adidas
+    defaults: { _controller: JoanAdidasBundle:Default:adidas }
