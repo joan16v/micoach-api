@@ -62,7 +62,9 @@ class DefaultController extends Controller
             // resource owner.
             $resourceOwner = $provider->getResourceOwner($accessToken);
 
-            var_export($resourceOwner->toArray());
+            $result = var_export($resourceOwner->toArray());
+
+            return new Response($result);
 
         } catch (IdentityProviderException $e) {
 
