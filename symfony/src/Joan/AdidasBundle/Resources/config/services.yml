@@ -1,0 +1,4 @@
+services:
+#    joan_adidas.example:
+#        class: Joan\AdidasBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

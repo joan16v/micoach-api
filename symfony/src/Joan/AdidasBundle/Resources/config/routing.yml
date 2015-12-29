@@ -1,0 +1,3 @@
+joan_adidas_homepage:
+    path:     /
+    defaults: { _controller: JoanAdidasBundle:Default:index }
