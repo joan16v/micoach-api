@@ -23,10 +23,10 @@ class DefaultController extends Controller
         $provider = new GenericProvider([
             'clientId'                => 'demoapp',    // The client ID assigned to you by the provider
             'clientSecret'            => 'demopass',   // The client password assigned to you by the provider
-            'redirectUri'             => 'http://example.com/your-redirect-url/',
+            'redirectUri'             => 'http://localhost/micoach-api/symfony/web/app_dev.php/adidas',
             'urlAuthorize'            => 'https://pf.adidas.com/as/authorization.oauth2',
             'urlAccessToken'          => 'https://api.micoach.com/oauth/token',
-            'urlResourceOwnerDetails' => 'http://brentertainment.com/oauth2/lockdin/resource'
+            'urlResourceOwnerDetails' => 'https://api.micoach.com/v3/users/me'
         ]);
         //print_r($provider);
         echo $provider->getAuthorizationUrl() . '<br>';
